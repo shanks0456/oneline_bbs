@@ -1,7 +1,35 @@
 <?php
   // ここにDBに登録する処理を記述する
 
+$dsn = 'mysql:dbname=oneline_bbs;host=localhost';
+$user = 'root';
+$password='';
+$dbh = new PDO($dsn, $user, $password);
+$dbh->query('SET NAMES utf8');
+
+
+
+if (isset($_POST) && !empty($_POST)){
+
+	$sql = 'INSERT INTO `posts`(`nickname`, `comment`, `created`) VALUES (?, ?, now())';
+
+	$param[] = $_POST['nickname'];
+	$param[] = $_POST['comment'];
+
+	var_dump ($param);
+
+	$stmt = $dbh->prepare($sql);
+$stmt -> execute($param);
+	
+	$dbh = null;
+	
+}
+
+// $sql = 'SELECT * FROM `posts` ORDER BY `created` DESC';
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
