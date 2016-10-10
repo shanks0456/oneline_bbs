@@ -16,14 +16,34 @@ if (isset($_POST) && !empty($_POST)){
 	$param[] = $_POST['nickname'];
 	$param[] = $_POST['comment'];
 
-	var_dump ($param);
-
 	$stmt = $dbh->prepare($sql);
-$stmt -> execute($param);
-	
+	$stmt -> execute($param);
+}
+
+$sql = 'SELECT * FROM `posts` ORDER BY `created` DESC';
+
+// SELECT文の実行
+$stmt = $dbh->prepare($sql);
+$stmt -> execute();
+
+//格納する変数の初期化
+$posts = array();
+
+//繰り返し分でデータの取得
+while(1){
+    $rec = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($rec == false){
+      //データを最後まで取得した印なので終了
+      break;
+    }
+    //取得したデータを配列に格納しておく
+    $posts[] = $rec;
+
+
+}
+
 	$dbh = null;
 	
-}
 
 // $sql = 'SELECT * FROM `posts` ORDER BY `created` DESC';
 
@@ -43,6 +63,22 @@ $stmt -> execute($param);
       <p><button type="submit" >つぶやく</button></p>
     </form>
     <!-- ここにニックネーム、つぶやいた内容、日付を表示する -->
+
+    <ul>
+    <?php
+      foreach ($posts as $post_each) {
+        echo '<li>';
+
+        echo 'nickname'.$post_each['nickname'];
+        echo 'comment'.$post_each['comment'];
+        echo 'created'.$post_each['created'];
+        echo '</li>';
+        echo '<hr>';
+      }
+
+    ?>
+
+    </ul>
 
 </body>
 </html>
